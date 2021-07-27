@@ -1,5 +1,5 @@
 import tweepy
-
+import json
 import config
 
 auth = tweepy.OAuthHandler(config.consumer_key, config.consumer_secret)
@@ -41,8 +41,24 @@ class FavRetweetListener(tweepy.StreamListener):
     def on_error(self, status):
         print(status)
 
-friend_list = api.friends() #TODO: Gives all following as well
+friend_list = {} #TODO: Gives all following as well
+
+#f = open("friends.json", "r")
+#friend_list = json.load(f.readline())
+#f.close()
+
+if friend_list == {}:
+    for friend in api.friends():#TODO: Gives all following as well
+        friend_list[friend.id] = {
+            "id" : friend.id,
+            "name" : friend.name,
+            "screen_name" : friend.screen_name,
+            "score": 0
+            }
+    f = open("friends.json", "w")
+    f.write(json.dumps(friend_list))
+    f.close()
 
 tweets_listener = FavRetweetListener(api)
 stream = tweepy.Stream(api.auth, tweets_listener)
-stream.filter(follow=[str(user.id) for user in friend_list], is_async = True)
+stream.filter(follow=[str(user) for user in friend_list], is_async = True)
