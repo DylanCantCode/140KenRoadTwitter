@@ -5,6 +5,7 @@
 
 config.py
 friends.json
+friends/*
 
 # User-specific files
 *.rsuser

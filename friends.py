@@ -22,3 +22,10 @@ def updateFriends(api, friend_list):
     f.close()
 
     return friend_list
+
+def getTweets(api, friend):
+    tweets = api.user_timeline(id = friend["id"])
+    tweet_list = [tweet.text for tweet in tweets]
+    f = open("friends/{}.json".format(friend["name"]), "w")
+    f.write(json.dumps(tweet_list))
+    f.close()

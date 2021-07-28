@@ -1,7 +1,7 @@
 import tweepy
 import config
 from process import processTweet
-from friends import readFriends, updateFriends
+from friends import readFriends, updateFriends, getTweets
 
 auth = tweepy.OAuthHandler(config.consumer_key, config.consumer_secret)
 auth.set_access_token(config.access_token, config.access_token_secret)
@@ -29,6 +29,8 @@ class FavRetweetListener(tweepy.StreamListener):
 
 friend_list = readFriends()
 friend_list = updateFriends(api, friend_list)
+for friend in friend_list:
+    getTweets(api, friend_list[friend])
 
 tweets_listener = FavRetweetListener(api)
 stream = tweepy.Stream(api.auth, tweets_listener)
