@@ -6,7 +6,7 @@ def getFakeTweet(friend):
     f = open("friends/{}.json".format(friend["name"]), "r")
     tweets = json.load(f)
     f.close()
-    input = "User: " + "\nUser: ".join(tweets) + "\nUser: "
+    input = "User: " + "\nUser: ".join(tweets[0:50]) + "\nUser: "
 
     openai.api_key = config.openai_key
 
