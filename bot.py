@@ -1,5 +1,4 @@
 import tweepy
-import json
 import config
 from process import processTweet
 from friends import readFriends, updateFriends
