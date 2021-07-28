@@ -31,6 +31,6 @@ def getTweets(api, friend):
                 tweet.retweeted_status
             except AttributeError:
                 tweet_list.append(tweet.text)
-    f = open("friends/{}.json".format(friend["name"]), "w")
+    f = open("friends/{}.json".format(friend["id"]), "w")
     f.write(json.dumps(tweet_list))
     f.close()
