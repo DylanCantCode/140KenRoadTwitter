@@ -1,4 +1,5 @@
 import json
+import tweepy
 
 def readFriends():
     f = open("friends.json", "r")
@@ -8,7 +9,6 @@ def readFriends():
 
 def updateFriends(api, friend_list):
     for friend in api.friends():
-        print(friend_list.keys())
         if str(friend.id) not in friend_list.keys():
             print(f"adding friend {friend.name}")
             friend_list[friend.id] = {
@@ -24,8 +24,13 @@ def updateFriends(api, friend_list):
     return friend_list
 
 def getTweets(api, friend):
-    tweets = api.user_timeline(id = friend["id"])
-    tweet_list = [tweet.text for tweet in tweets]
+    tweet_list = []
+    for tweet in tweepy.Cursor(api.user_timeline, id=friend["id"]).items():
+        if tweet.in_reply_to_status_id is None:
+            try:
+                tweet.retweeted_status
+            except AttributeError:
+                tweet_list.append(tweet.text)
     f = open("friends/{}.json".format(friend["name"]), "w")
     f.write(json.dumps(tweet_list))
     f.close()
