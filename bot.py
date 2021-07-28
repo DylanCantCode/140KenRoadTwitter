@@ -1,6 +1,7 @@
 import tweepy
 import json
 import config
+from process import processTweet
 
 auth = tweepy.OAuthHandler(config.consumer_key, config.consumer_secret)
 auth.set_access_token(config.access_token, config.access_token_secret)
@@ -21,22 +22,8 @@ class FavRetweetListener(tweepy.StreamListener):
 
     def on_status(self, tweet):
         print(f"Processing tweet id {tweet.id}")
-        if tweet.in_reply_to_status_id is not None or \
-            tweet.user.id == self.me.id:
-            # This tweet is a reply or I'm its author so, ignore it
-            return
-        if not tweet.favorited:
-            # Mark it as Liked, since we have not done it yet
-            try:
-                tweet.favorite()
-            except Exception as e:
-                print("Error on fav")
-        if not tweet.retweeted:
-            # Retweet, since we have not retweeted it yet
-            try:
-                tweet.retweet()
-            except Exception as e:
-                print("Error on fav and retweet")
+        friend = friend_list[tweet.user.id]
+        processTweet(tweet, friend)
 
     def on_error(self, status):
         print(status)
@@ -53,7 +40,7 @@ if friend_list == {}:
             "id" : friend.id,
             "name" : friend.name,
             "screen_name" : friend.screen_name,
-            "score": 0
+            "score": 1
             }
     f = open("friends.json", "w")
     f.write(json.dumps(friend_list))
